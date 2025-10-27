@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Supply Chain Strategy - Team 5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #FDB913;
+            --gold-light: #FFD700;
+            --gold-dark: #C89000;
+            --black: #000000;
+            --dark-gray: #0a0a0a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--black);
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .header .subtitle {
+            font-size: 20px;
+            color: #cccccc;
+            font-weight: 400;
+        }
+
+        .header .team {
+            font-size: 13px;
+            color: #888888;
+            margin-top: 15px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Section */
+        .section {
+            padding: 50px 20px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* Icons */
+        .icon {
+            color: var(--gold);
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .icon-small {
+            color: var(--gold);
+            font-size: 18px;
+            margin-right: 8px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            padding: 30px 15px;
+            border-radius: 16px;
+            text-align: center;
+            color: var(--black);
+        }
+
+        .stat-card .icon {
+            font-size: 36px;
+            margin-bottom: 12px;
+            color: var(--black);
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .label {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Arguments */
+        .arguments-list {
+            margin-top: 30px;
+        }
+
+        .argument-item {
+            background: rgba(26, 26, 26, 0.5);
+            padding: 25px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 3px solid var(--gold);
+        }
+
+        .argument-item .number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gold);
+            color: var(--black);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-weight: 700;
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        .argument-item h3 {
+            display: inline;
+            color: var(--gold);
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .argument-item p {
+            color: #dddddd;
+            font-size: 15px;
+            margin-top: 12px;
+            line-height: 1.6;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background: rgba(26, 26, 26, 0.4);
+            padding: 25px;
+            border-radius: 16px;
+            margin-top: 30px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            margin-top: 15px;
+        }
+
+        /* Cost Comparison */
+        .cost-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .cost-box {
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .cost-box.china {
+            background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
+            color: var(--black);
+        }
+
+        .cost-box.usa {
+            background: rgba(26, 26, 26, 0.5);
+            border: 2px solid #ff4444;
+        }
+
+        .cost-box .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .cost-box .price {
+            font-size: 52px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .cost-box .label {
+            font-size: 18px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Frameworks */
+        .framework-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .framework-card {
+            background: rgba(26, 26, 26, 0.4);
+            padding: 30px;
+            border-radius: 16px;
+            border-top: 3px solid var(--gold);
+        }
+
+        .framework-card h3 {
+            color: var(--gold);
+            font-size: 22px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .framework-card h4 {
+            font-size: 16px;
+            margin-top: 18px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .framework-card ul {
+            list-style: none;
+        }
+
+        .framework-card li {
+            color: #dddddd;
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .framework-card li:before {
+            content: "◆";
+            color: var(--gold);
+            position: absolute;
+            left: 0;
+            font-size: 12px;
+        }
+
+        .framework-card strong {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        /* Table */
+        .alternatives-table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .alternatives-table thead tr {
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+        }
+
+        .alternatives-table th {
+            color: var(--black);
+            padding: 18px 20px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .alternatives-table th:first-child {
+            border-radius: 12px 0 0 12px;
+        }
+
+        .alternatives-table th:last-child {
+            border-radius: 0 12px 12px 0;
+        }
+
+        .alternatives-table tbody tr {
+            background: rgba(26, 26, 26, 0.4);
+        }
+
+        .alternatives-table td {
+            padding: 18px 20px;
+            color: #dddddd;
+            font-size: 14px;
+        }
+
+        .alternatives-table td:first-child {
+            border-radius: 12px 0 0 12px;
+            font-weight: 600;
+        }
+
+        .alternatives-table td:last-child {
+            border-radius: 0 12px 12px 0;
+        }
+
+        /* Quote */
+        .quote-section {
+            background: rgba(26, 26, 26, 0.5);
+            padding: 40px;
+            border-radius: 16px;
+            border-left: 4px solid var(--gold);
+            margin-top: 30px;
+        }
+
+        .quote-section blockquote {
+            font-size: 22px;
+            font-style: italic;
+            color: #ffffff;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .quote-section cite {
+            font-size: 16px;
+            color: var(--gold);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        /* Risk Grid */
+        .risk-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .risk-item {
+            background: rgba(26, 26, 26, 0.4);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border-bottom: 3px solid var(--gold);
+        }
+
+        .risk-item .icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .risk-item h4 {
+            color: var(--gold);
+            font-size: 15px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .risk-item p {
+            color: #cccccc;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 2px solid var(--gold);
+        }
+
+        .footer p {
+            font-size: 13px;
+            color: #888888;
+            letter-spacing: 1px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .framework-grid, .risk-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { 
+                font-size: 28px;
+            }
+            .header .subtitle {
+                font-size: 16px;
+            }
+            .section {
+                padding: 35px 15px;
+            }
+            .section-title { 
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            .stat-card {
+                padding: 20px 10px;
+            }
+            .stat-card .number {
+                font-size: 24px;
+            }
+            .stat-card .label {
+                font-size: 11px;
+            }
+            .cost-comparison {
+                gap: 15px;
+            }
+            .cost-box {
+                padding: 30px 20px;
+            }
+            .cost-box .price {
+                font-size: 36px;
+            }
+            .cost-box .label {
+                font-size: 14px;
+            }
+            .argument-item {
+                padding: 20px;
+            }
+            .argument-item h3 {
+                font-size: 17px;
+                display: block;
+                margin-top: 10px;
+            }
+            .argument-item p {
+                font-size: 14px;
+            }
+            .framework-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            .framework-card {
+                padding: 20px;
+            }
+            .framework-card h3 {
+                font-size: 18px;
+            }
+            .framework-card li {
+                font-size: 12px;
+            }
+            .risk-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            .risk-item {
+                padding: 18px;
+            }
+            .risk-item h4 {
+                font-size: 13px;
+            }
+            .risk-item p {
+                font-size: 11px;
+            }
+            .quote-section {
+                padding: 25px;
+            }
+            .quote-section blockquote {
+                font-size: 16px;
+            }
+            .alternatives-table th,
+            .alternatives-table td {
+                padding: 12px 10px;
+                font-size: 11px;
+            }
+            .chart-wrapper {
+                height: 250px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .framework-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="container">
+            <h1>Apple's Supply Chain & Trade Wars</h1>
+            <div class="subtitle">Why China Still Makes Sense</div>
+            <div class="team">Team 5 • October 2025</div>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="section" style="background: var(--dark-gray);">
+        <div class="container">
+            <h2 class="section-title">Key Numbers</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-dollar-sign icon"></i>
+                    <div class="number">$35.2B</div>
+                    <div class="label">Annual Savings</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-industry icon"></i>
+                    <div class="number">151/200</div>
+                    <div class="label">Suppliers</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-mobile-alt icon"></i>
+                    <div class="number">85%</div>
+                    <div class="label">iPhones</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-calendar-alt icon"></i>
+                    <div class="number">20+</div>
+                    <div class="label">Years Built</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Arguments -->
+    <div class="section">
+        <div class="container">
+            <h2 class="section-title">Main Arguments</h2>
+            <div class="arguments-list">
+                <div class="argument-item">
+                    <span class="number">1</span>
+                    <h3>Cost Advantage</h3>
+                    <p>$40 in China vs $200 in USA. Moving production means $35.2B extra cost annually.</p>
+                </div>
+                <div class="argument-item">
+                    <span class="number">2</span>
+                    <h3>Supplier Ecosystem</h3>
+                    <p>151 of 200 suppliers nearby. Took 20 years and $275B to build. Can't replicate elsewhere.</p>
+                </div>
+                <div class="argument-item">
+                    <span class="number">3</span>
+                    <h3>Speed & Flexibility</h3>
+                    <p>8,000 engineers mobilized overnight. Production retooled in 96 hours. No other country can match this.</p>
+                </div>
+                <div class="argument-item">
+                    <span class="number">4</span>
+                    <h3>Quality & Skills</h3>
+                    <p>Decades of expertise in complex assembly. Alternative locations lack the precision needed.</p>
+                </div>
+                <div class="argument-item">
+                    <span class="number">5</span>
+                    <h3>Smart Diversification</h3>
+                    <p>Already moving 15% to India by 2027. Gradual approach manages risk without disruption.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cost Comparison -->
+    <div class="section" style="background: var(--dark-gray);">
+        <div class="container">
+            <h2 class="section-title">Cost Comparison</h2>
+            <div class="cost-comparison">
+                <div class="cost-box china">
+                    <i class="fas fa-check-circle icon"></i>
+                    <div class="price">$40</div>
+                    <div class="label">China</div>
+                </div>
+                <div class="cost-box usa">
+                    <i class="fas fa-times-circle icon"></i>
+                    <div class="price">$200</div>
+                    <div class="label">USA</div>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 25px; font-size: 20px; color: var(--gold); font-weight: 600;">
+                5x More Expensive = $35.2B Annual Increase
+            </p>
+            
+            <div class="chart-container">
+                <h3 style="color: var(--gold); font-size: 20px; text-align: center; font-weight: 600;">
+                    <i class="fas fa-chart-bar icon-small"></i> Assembly Cost by Country
+                </h3>
+                <div class="chart-wrapper">
+                    <canvas id="costChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supplier Chart -->
+    <div class="section">
+        <div class="container">
+            <div class="chart-container">
+                <h3 style="color: var(--gold); font-size: 22px; text-align: center; font-weight: 600;">
+                    <i class="fas fa-globe icon-small"></i> Supplier Distribution
+                </h3>
+                <div class="chart-wrapper">
+                    <canvas id="supplierChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Frameworks -->
+    <div class="section" style="background: var(--dark-gray);">
+        <div class="container">
+            <h2 class="section-title">Business Analysis</h2>
+            
+            <div class="framework-grid">
+                <!-- SWOT -->
+                <div class="framework-card">
+                    <h3><i class="fas fa-th icon-small"></i> SWOT</h3>
+                    <h4 style="color: #4CAF50;">Strengths</h4>
+                    <ul>
+                        <li>$35.2B cost savings</li>
+                        <li>151/200 suppliers in China</li>
+                        <li>20+ years ecosystem</li>
+                    </ul>
+                    <h4 style="color: #ff4444;">Weaknesses</h4>
+                    <ul>
+                        <li>Single country risk</li>
+                        <li>Tariff exposure</li>
+                    </ul>
+                    <h4 style="color: #2196F3;">Opportunities</h4>
+                    <ul>
+                        <li>India expansion (15%)</li>
+                        <li>Vietnam for accessories</li>
+                    </ul>
+                    <h4 style="color: #FF9800;">Threats</h4>
+                    <ul>
+                        <li>Trade tensions</li>
+                        <li>Political pressure</li>
+                    </ul>
+                </div>
+
+                <!-- Porter's -->
+                <div class="framework-card">
+                    <h3><i class="fas fa-network-wired icon-small"></i> Porter's Forces</h3>
+                    <ul style="margin-top: 10px;">
+                        <li><strong>Supplier Power:</strong> Low - Apple's scale gives leverage</li>
+                        <li><strong>Buyer Power:</strong> Medium - Price-sensitive consumers</li>
+                        <li><strong>Rivalry:</strong> High - Samsung, Huawei compete</li>
+                        <li><strong>Substitutes:</strong> Medium - Longer device lifecycles</li>
+                        <li><strong>Entry Barriers:</strong> High - Ecosystem lock-in</li>
+                    </ul>
+                </div>
+
+                <!-- PESTEL -->
+                <div class="framework-card">
+                    <h3><i class="fas fa-globe-americas icon-small"></i> PESTEL</h3>
+                    <ul style="margin-top: 10px;">
+                        <li><strong>Political:</strong> Tensions manageable with trade deals</li>
+                        <li><strong>Economic:</strong> 5x cost advantage vs alternatives</li>
+                        <li><strong>Social:</strong> Consumers prioritize price & quality</li>
+                        <li><strong>Tech:</strong> China leads in manufacturing automation</li>
+                        <li><strong>Environmental:</strong> Improving renewable energy use</li>
+                        <li><strong>Legal:</strong> IP protection improving</li>
+                    </ul>
+                </div>
+
+                <!-- Hofstede -->
+                <div class="framework-card">
+                    <h3><i class="fas fa-users icon-small"></i> Hofstede Dimensions</h3>
+                    <ul style="margin-top: 10px;">
+                        <li><strong>Individualism:</strong> China 20 vs USA 91 - Team focus</li>
+                        <li><strong>Uncertainty:</strong> China 30 vs USA 46 - Flexibility</li>
+                        <li><strong>Power Distance:</strong> China 80 vs USA 40 - Hierarchy</li>
+                        <li><strong>Long-term:</strong> China 87 vs USA 26 - Commitment</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alternatives -->
+    <div class="section">
+        <div class="container">
+            <h2 class="section-title">Alternative Locations</h2>
+            <table class="alternatives-table">
+                <thead>
+                    <tr>
+                        <th>Country</th>
+                        <th>Cost</th>
+                        <th>Timeline</th>
+                        <th>Limitations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>China</strong></td>
+                        <td style="color: #4CAF50; font-weight: 600;">$40</td>
+                        <td style="color: #4CAF50; font-weight: 600;">Ready</td>
+                        <td style="color: #4CAF50;">151/200 suppliers, proven quality</td>
+                    </tr>
+                    <tr>
+                        <td><strong>India</strong></td>
+                        <td style="color: #FF9800; font-weight: 600;">$65</td>
+                        <td style="color: #FF9800; font-weight: 600;">5-7 yrs</td>
+                        <td style="color: #FF9800;">Limited suppliers, infrastructure gaps</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vietnam</strong></td>
+                        <td style="color: #FF9800; font-weight: 600;">$55</td>
+                        <td style="color: #FF9800; font-weight: 600;">3-5 yrs</td>
+                        <td style="color: #FF9800;">Too small, weak infrastructure</td>
+                    </tr>
+                    <tr>
+                        <td><strong>USA</strong></td>
+                        <td style="color: #ff4444; font-weight: 600;">$200</td>
+                        <td style="color: #ff4444; font-weight: 600;">10+ yrs</td>
+                        <td style="color: #ff4444;">5x expensive, no ecosystem</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Quote -->
+    <div class="section" style="background: var(--dark-gray);">
+        <div class="container">
+            <div class="quote-section">
+                <blockquote>
+                    "There's no supply chain more critical to Apple than China. The partnership really makes things happen."
+                </blockquote>
+                <cite>— Tim Cook, CEO</cite>
+            </div>
+        </div>
+    </div>
+
+    <!-- Risk Management -->
+    <div class="section">
+        <div class="container">
+            <h2 class="section-title">Risk Management</h2>
+            <div class="risk-grid">
+                <div class="risk-item">
+                    <i class="fas fa-globe-asia icon"></i>
+                    <h4>India Diversification</h4>
+                    <p>15% by 2027</p>
+                </div>
+                <div class="risk-item">
+                    <i class="fas fa-map-marked-alt icon"></i>
+                    <h4>Vietnam Expansion</h4>
+                    <p>Accessories only</p>
+                </div>
+                <div class="risk-item">
+                    <i class="fas fa-handshake icon"></i>
+                    <h4>China Relations</h4>
+                    <p>Continued investment</p>
+                </div>
+                <div class="risk-item">
+                    <i class="fas fa-robot icon"></i>
+                    <h4>Automation</h4>
+                    <p>Reduce labor dependency</p>
+                </div>
+                <div class="risk-item">
+                    <i class="fas fa-sitemap icon"></i>
+                    <h4>Multiple Suppliers</h4>
+                    <p>For critical parts</p>
+                </div>
+                <div class="risk-item">
+                    <i class="fas fa-boxes icon"></i>
+                    <h4>Inventory Buffers</h4>
+                    <p>Manage disruptions</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="container">
+            <p>TEAM 5 • DEBATE PROJECT • OCTOBER 2025</p>
+        </div>
+    </div>
+
+    <script>
+        // Cost Chart
+        const costCtx = document.getElementById('costChart').getContext('2d');
+        new Chart(costCtx, {
+            type: 'bar',
+            data: {
+                labels: ['China', 'India', 'Vietnam', 'USA'],
+                datasets: [{
+                    label: 'Cost ($)',
+                    data: [40, 65, 55, 200],
+                    backgroundColor: [
+                        'rgba(253, 185, 19, 0.75)',
+                        'rgba(255, 152, 0, 0.55)',
+                        'rgba(255, 152, 0, 0.55)',
+                        'rgba(255, 68, 68, 0.55)'
+                    ],
+                    borderColor: [
+                        'rgba(253, 185, 19, 1)',
+                        'rgba(255, 152, 0, 1)',
+                        'rgba(255, 152, 0, 1)',
+                        'rgba(255, 68, 68, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.08)' },
+                        ticks: {
+                            color: '#ffffff',
+                            font: { size: 12 },
+                            callback: function(value) { return '$' + value; }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            color: '#ffffff',
+                            font: { size: 12, weight: '600' }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Supplier Chart
+        const supplierCtx = document.getElementById('supplierChart').getContext('2d');
+        new Chart(supplierCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['China (151)', 'Others (49)'],
+                datasets: [{
+                    data: [151, 49],
+                    backgroundColor: [
+                        'rgba(253, 185, 19, 0.75)',
+                        'rgba(42, 42, 42, 0.75)'
+                    ],
+                    borderColor: [
+                        'rgba(253, 185, 19, 1)',
+                        'rgba(100, 100, 100, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#ffffff',
+                            font: { size: 14 },
+                            padding: 15
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
